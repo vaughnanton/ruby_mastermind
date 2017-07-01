@@ -1,2 +1,1 @@
-# ruby_mastermind
-An iteration of the Mastermind game implemented at the command line. 
+A ruby version of Mastermind, a hangman-like game, to be executed at the command line. The computer will generate a code that the player must try to guess in under 12 turns. After each turn, the computer will give feedback on the code. 
