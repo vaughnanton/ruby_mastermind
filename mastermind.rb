@@ -5,7 +5,7 @@ class Game
     @comp = Computer.new
     @player = Player.new
   end
-
+=begin
   def play
     12.times do |i|
       puts "This is chance #{i+1} of 12"
@@ -44,12 +44,12 @@ class Game
   def exact_match?(choice,position)
     choice == @comp.code_combination[position]
   end
-
+=end
 end
 
 
 class Computer
-
+#code combination can be accessed but not changed
   attr_reader :code_combination
 
   def initialize
