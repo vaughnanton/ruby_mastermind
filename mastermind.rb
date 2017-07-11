@@ -1,80 +1,79 @@
-class Game
-  COLORS = ["R", "G", "B", "Y", "O", "P"]
+class MasterMind
 
-  def initialize
-    @comp = Computer.new
-    @player = Player.new
-  end
-=begin
-  def play
-    12.times do |i|
-      puts "This is chance #{i+1} of 12"
-      current_guess = @player.guess
-      standing = evaluate_guess(current_guess)
-
-      if standing[:exact].length == 4
-        puts "You won!"
-        return
-      else
-        puts "#{standing[:exact].length} exact matches"
-        puts "#{standing[:near].length} near matches"
-      end
-    end
-
-    puts "12 chances complete, you lose!"
-    return
-  end
-
-  def evaluate_guess(current_guess)
-    results = { :exact => [], :near => [] }
-    current_guess.each_with_index do |choice, position|
-      if exact_match?(choice, position)
-        results[:exact] << true
-      elsif near_match?(choice)
-        results[:near] << true
-      end
-    end
-    results
-  end
-
-  def near_match?(choice)
-    @comp.code_combination.include?(choice)
-  end
-
-  def exact_match?(choice,position)
-    choice == @comp.code_combination[position]
-  end
-=end
-end
+	def initialize
+		colors = %w{ red orange yellow green blue }
+		@code = colors.sample(4).each do |color| end
+		@turn = 1
+	end
 
 
-class Computer
-#code combination can be accessed but not changed
-  attr_reader :code_combination
+	def player_answer
+		player_answer = gets.chomp.downcase.split
+		@player_code = player_answer.each do |color| end
+		puts "\nYour guess: #{@player_code}\n"
+		if @code == @player_code then puts "\n\nYou Win!"
+			play_again
+		else compare
+		end
+	end
 
-  def initialize
-    @code_combination = code
-  end
 
-  def code
-    colors = Game::COLORS.shuffle
-    generated_code = []
-    4.times { generated_code << colors.pop }
-    generated_code
-  end
+	def compare
+			colors_wrong_spot = @code & @player_code
+			length_colors_wrong_spot = colors_wrong_spot.length
+			show_answer = @code.zip(@player_code).map {|x, y| x == y}
+			random_show_answer = show_answer.sample(4)
 
-end
+				puts "\nYou guessed #{length_colors_wrong_spot} colors that are in the secret combination. \n"
+				puts "\nTrue means you put a color in the correct position but you don't know which position beacuse the true/false is randomized...\n#{random_show_answer}\n"
+	end
 
-class Player
 
-  def guess
-    puts "Please enter your guess by choosing one of the following: R, G, B, Y, O, P"
-  end
+	def play
+		while @turn <= 10
+			puts "\nThis is turn #{@turn} of 10. Color list: red, orange, yellow, green, blue."
+			@turn += 1
+			player_answer
+		end
+			game_over
+	end
 
-  def convert_guess(guess)
-    guess.split('')
-  end
+
+	def game_over
+		puts "\nGame Over! The correct combination was #{@code}. Want to play again? Y/N"
+		if gets.chomp == "Y"
+			new_game = MasterMind.new
+			new_game.start
+		else
+			puts "\nExiting..."
+			exit
+		end
+	end
+
+
+	def play_again
+		puts "\nWould you like to play again? Y/N"
+		if gets.chomp == "Y"
+			new_game = MasterMind.new
+			new_game.start
+		else
+			puts "\nExiting..."
+			exit
+		end
+	end
+
+
+	def start
+		puts "\nWelcome to MasterMind!"
+		puts "There is a secret combination of 4 colors to be discovered within 10 tries!"
+		puts "Type in 4 colors from the following list on each turn and try to guess the correct order: red, orange, yellow, green, blue."
+		puts "When inputting your answer just type the color's name and a space between each color. NO COMMAS!"
+		puts "Let's begin..."
+		play
+	end
+
 
 end
 
-Game.new.play
+new_game = MasterMind.new
+new_game.start
